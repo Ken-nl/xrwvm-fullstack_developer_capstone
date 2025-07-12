@@ -101,12 +101,18 @@ const PostReview = () => {
       </div>
       <div className='input_field'>
       Car Make 
-      <select name="cars" id="cars" onChange={(e) => setModel(e.target.value)}>
-      <option value="" selected disabled hidden>Choose Car Make and Model</option>
-      {carmodels.map(carmodel => (
-          <option value={carmodel.CarMake+" "+carmodel.CarModel}>{carmodel.CarMake} {carmodel.CarModel}</option>
-      ))}
-      </select>        
+     <select name="car_make" onChange={(e) => setModel(e.target.value)}>
+      <option value="">Choose Car Make and Model</option>
+      {carmodels && carmodels.length > 0 ? (
+        carmodels.map((carmodel, index) => (
+          <option key={index} value={carmodel.CarMake + " " + carmodel.CarModel}>
+            {carmodel.CarMake} {carmodel.CarModel}
+          </option>
+        ))
+      ) : (
+        <option disabled>Loading...</option>
+      )}
+     </select>       
       </div >
 
       <div className='input_field'>

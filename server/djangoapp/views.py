@@ -138,6 +138,7 @@ def add_review(request):
     else:
         return JsonResponse({"status":403,"message":"Unauthorized"})
 
+@csrf_exempt
 def get_cars(request):
     count = CarMake.objects.filter().count()
     print(count)
@@ -148,3 +149,9 @@ def get_cars(request):
     for car_model in car_models:
         cars.append({"CarModel": car_model.name, "CarMake": car_model.car_make.name})
     return JsonResponse({"CarModels":cars})
+
+@csrf_exempt
+def get_car_makes(request):
+    car_makes = CarMake.objects.values_list('name', flat=True).distinct()
+    return JsonResponse({"CarMakes": list(car_makes)})
+
