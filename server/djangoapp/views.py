@@ -56,25 +56,36 @@ def logout_user(request):   # Terminate user session
 
 @csrf_exempt
 def registration(request):
-    # Load JSON data from the request body
-    data = json.loads(request.body)
-    username = data['userName']
-    password = data['password']
-    first_name = data['firstName']
-    last_name = data['lastName']
-    email = data['email']
+    if request.method != 'POST':
+        return JsonResponse({
+            "error": "Only POST method allowed"
+        }, status=405)
+
+    try:
+        # Load JSON data from the request body
+        data = json.loads(request.body)
+        username = data['userName']
+        password = data['password']
+        first_name = data['firstName']
+        last_name = data['lastName']
+        email = data['email']
+    except (KeyError, json.JSONDecodeError) as e:
+        return JsonResponse({
+            "error": "Invalid input",
+            "details": str(e)
+        }, status=400)
+
     username_exist = False
     try:
         # Check if user already exists
         User.objects.get(username=username)
         username_exist = True
-    except Exception as e:
-        # If not, simply log this is a new user
-        logger.debug("{} is new user ".format(username): {e})
+    except User.DoesNotExist:
+        # If not, log this is a new user
+        logger.debug(f"{username} is a new user.")
 
     # If it is a new user
     if not username_exist:
-        # Create user in auth_user table
         user = User.objects.create_user(
             username=username,
             first_name=first_name,
@@ -82,19 +93,16 @@ def registration(request):
             password=password,
             email=email
         )
-        # Login the user and redirect to list page
         login(request, user)
-        data = {
+        return JsonResponse({
             "userName": username,
             "status": "Authenticated"
-        }
-        return JsonResponse(data)
+        }, status=201)
     else:
-        data = {
+        return JsonResponse({
             "userName": username,
             "error": "Already Registered"
-        }
-        return JsonResponse(data)
+        }, status=409)
 
 
 def get_dealerships(request, state="All"):
