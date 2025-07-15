@@ -31,12 +31,14 @@ SECRET_KEY =\
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost', 
-    'https://neutrallifea-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
+    'localhost',
+    'https://neutrallifea-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01'
+    '.proxy.cognitiveclass.ai',
     '127.0.0.1'
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://neutrallifea-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
+    'https://neutrallifea-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01'
+    '.proxy.cognitiveclass.ai'
 ]
 
 REST_FRAMEWORK = {
@@ -102,7 +104,8 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'django.contrib.auth.password_validation'
+        '.UserAttributeSimilarityValidator',
     },
     {
         'NAME':
