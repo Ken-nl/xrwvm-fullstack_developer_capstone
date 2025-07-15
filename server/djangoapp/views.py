@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from .populate import initiate
 from .restapis import get_request, analyze_review_sentiments
 from .models import CarMake, CarModel
@@ -48,6 +49,7 @@ def logout_user(request):  # Terminate user session
         return JsonResponse({"error": "Only POST method allowed"}, status=405)
 
 
+@require_POST
 @csrf_exempt
 def registration(request):
     if request.method != "POST":
@@ -101,9 +103,6 @@ def get_dealerships(request, state="All"):
     return JsonResponse({"status": 200, "dealers": dealerships})
 
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-
-
 def get_dealer_reviews(request, dealer_id):
     if dealer_id:
         endpoint = "/fetchReviews/dealer/" + str(dealer_id)
@@ -123,9 +122,6 @@ def get_dealer_reviews(request, dealer_id):
         return JsonResponse({"status": 200, "reviews": reviews})
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
-
-
-# Create a `get_dealer_details` view to render the dealer details
 
 
 def get_dealer_details(request, dealer_id):
@@ -155,7 +151,7 @@ def add_review(request):
 @csrf_exempt
 def get_cars(request):
     count = CarMake.objects.filter().count()
-    print(count)
+    logger.info(f"Car count: {count}")
     if count == 0:
         initiate()
     car_models = CarModel.objects.select_related("car_make")
