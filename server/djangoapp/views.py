@@ -37,13 +37,17 @@ def login_user(request):
 @csrf_exempt
 def logout_user(request):   # Terminate user session
     if request.method == 'POST':
-        username = request.user.username
-        if request.user.is_authenticated else None
-        logout(request)
-        return JsonResponse({
-            "userName": username,
-            'status': "Logged out"
-        })
+        if request.user.is_authenticated:
+            username = request.user.username
+            logout(request)
+            return JsonResponse({
+                "userName": username,
+                'status': "Logged out"
+            })
+        else:
+            return JsonResponse({
+                "error": "User not authenticated"
+            }, status=401)
     else:
         return JsonResponse({
             "error": "Only POST method allowed"
